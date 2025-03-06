@@ -99,7 +99,7 @@ yarn build
  -Product (товар):
     id: string;                  // идентификатор товара
     name: string;                // название 
-    description?: string;         // описание 
+    description?: string;        // описание 
     price: number | null;        // стоимость
     category: string             // категория
     image: string;               // изображение
