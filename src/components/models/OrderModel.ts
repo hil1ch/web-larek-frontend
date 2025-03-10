@@ -1,7 +1,7 @@
-import { OrderForm } from "../../types/types";
+import { IOrderForm } from "../../types/types";
 
 interface IOrderModel  {
-   orderForm: OrderForm;
-   setInput(orderForm: Partial<OrderForm>): void;
+   orderForm: IOrderForm;
+   setInput(orderForm: Partial<IOrderForm>): void;
    reset(): void;
 }

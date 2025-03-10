@@ -1,26 +1,29 @@
 
 // товар
-export type Product = {
+export interface IProduct {
    id: string;                  // идентификатор товара
    name: string;                // название 
    description?: string;        // описание 
    price: number | null;        // стоимость
-   category: string             // категория
+   category: ProductCategory    // категория
    image: string;               // изображение
 }
 // товар в корзине
-export type BasketItem = {
+export interface IBasketItem {
     id: string;                  // идентификатор 
     name: string;                // название 
     price: number | null;        // стоимость
- }
+}
 
  // форма заказа
-export type OrderForm = {
+export interface IOrderForm {
     payment: string;            // способ оплаты
     address: string;            // адрес доставки
     phone: string;              // номер телефона пользователя
     email: string;              // email пользователя
     total: string | number;     // общая сумма
     items: string[];            // массив идентификаторов приобретаемых товаров
- }
+}
+
+// категория товара
+export type ProductCategory = 'софт-скил' | 'другое' | 'дполнительное' | 'хард-скил' | 'кнопка';
