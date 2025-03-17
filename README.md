@@ -86,22 +86,23 @@ yarn build
 
 - CatalogModel - управляет состоянием списка товаров.
    ICatalogModel:
-      items: Product[] - список товаров
-      setProducts(items: Product): void - обновление списка товаров
-      getProduct(id: string): Product - получение товара из каталога по его идентификатору
+      items: IProduct[] - список товаров
+      setProducts(items: IProduct): void - обновление списка товаров
+      getProduct(id: string): IProduct - получение товара из каталога по его идентификатору
 
 - OrderModel - управляет данными заказа
    IOrderModel:
-      orderForm: OrderForm
-      setInput(orderForm: Partial<OrderForm>): void;
-      reset(): void
+      orderForm: IOrderForm
+      setInput(orderForm: Partial<IOrderForm>): void; - управление введенными данными
+      reset(): void - сброс данных заказа
 
 ## View
 
  - ProductView - модальное окно с полной информацией о товаре
  - CatalogView - отображение каталога товаров
  - BasketView - отображение корзины с товарами
- - OrderSuccessVies - отображение окна успешного офрмления заказа
+ - BasketItemView - отображение отдельного товара в корзине
+ - OrderSuccessVies - отображение окна успешного оформления заказа
  - ModalView - отображение модального окна (обертка)
  - View - общая структура для всех отображений
  - OrderPaymentView - отображение окна способа оплаты
