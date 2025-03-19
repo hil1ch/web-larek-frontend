@@ -1,7 +1,25 @@
 import { IProduct } from "../../types/types";
+import { EventEmitter, IEvents } from "../base/events";
 
 interface ICatalogModel {
-   items: IProduct[];                     // список товаров
-   setProducts(items: IProduct): void;    // обновление списка товаров
-   getProduct(id: string): IProduct;      // получение товара из каталога по его идентификатору
+    items: IProduct[];
+    setProducts(items: IProduct[]): void;
+    getProduct(id: string): IProduct;
+}
+
+export class CatalogModel implements ICatalogModel{
+    items: IProduct[] | null = null;
+    protected _events: IEvents | null = null;
+
+    constructor(events: EventEmitter) {
+        this._events = events;
+    }
+
+    setProducts(items: IProduct[]): void {
+        this.items = items;
+    }
+
+    getProduct(id: string): IProduct | undefined {
+        return this.items.find((item: IProduct) => item.id === id)
+    }
 }
