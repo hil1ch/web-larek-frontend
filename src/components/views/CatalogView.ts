@@ -2,17 +2,17 @@ import { EventEmitter } from "../base/events";
 import { View } from "./View";
 
 export class CatalogView extends View {
-   private galleryContainer: HTMLElement;
+   private container: HTMLElement;
 
    constructor(events: EventEmitter) {
       super(events)
 
-      this.galleryContainer = document.querySelector('.gallery');
+      this.container = document.querySelector('.gallery');
    }
 
    render({items}: {items: HTMLElement[]}) {
-      this.galleryContainer.replaceChildren(...items);
+      this.container.replaceChildren(...items);
 
-      return this.galleryContainer;
+      return this.container;
    }
 }

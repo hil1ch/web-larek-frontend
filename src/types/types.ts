@@ -30,11 +30,5 @@ export interface IOrderForm {
 // категория товара
 export type ProductCategory = 'софт-скил' | 'другое' | 'дполнительное' | 'хард-скил' | 'кнопка';
 
-//Cписок товаров с сервера
-export type ProductsList = {
-    items: IProduct[],
-    total: number
-}
-
 // Способ оплаты
 export type PaymentMethod = 'онлайн' | 'при получении';

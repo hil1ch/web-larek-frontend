@@ -1,19 +1,18 @@
 import { EventEmitter } from "../base/events";
 import { ModalView } from "./ModalView";
 import { cloneTemplate } from "../../utils/utils";
-import { IOrderForm, PaymentMethod } from "../../types/types";
+import { PaymentMethod } from "../../types/types";
 
 export class OrderPaymentView extends ModalView {
    constructor(events: EventEmitter) {
       super(events)
    }
 
-   render(data: { orderForm: Partial<IOrderForm>, payment: PaymentMethod }) {
-      const { orderForm, payment } = data;
+   render({ payment, address }: { payment: PaymentMethod, address: string }) {
 
-      const paymentContainer = cloneTemplate('#order') as HTMLFormElement;
+      const container = cloneTemplate('#order') as HTMLFormElement;
 
-      const orderButtons = paymentContainer.querySelectorAll('.button_alt');
+      const orderButtons = container.querySelectorAll('.button_alt');
       orderButtons.forEach((orderButton: HTMLButtonElement) => {
          // Активная кнопка
          if (orderButton.getAttribute('name') === payment.toString()) {
@@ -27,15 +26,15 @@ export class OrderPaymentView extends ModalView {
          })
       })
 
-      const addressInput = paymentContainer.querySelector('.form__input[name="address"]') as HTMLInputElement;
-      const continueButton = paymentContainer.querySelector('.order__button') as HTMLButtonElement;
+      const addressInput = container.querySelector('.form__input[name="address"]') as HTMLInputElement;
+      const continueButton = container.querySelector('.order__button') as HTMLButtonElement;
 
       // Кнопка недоступна, если поле адреса пустое
-      continueButton.disabled = orderForm.address === '';
-      addressInput.value = orderForm.address;
+      continueButton.disabled = address === '';
+      addressInput.value = address;
 
       // Обновление состояния кнопки и валидации
-      this._events.emit('validateError', { paymentContainer, inputValue: addressInput.value });
+      this._events.emit('validateError', { container, inputValue: addressInput.value });
 
       // Валидация поля адреса
       addressInput.addEventListener('input', () => {
@@ -45,7 +44,7 @@ export class OrderPaymentView extends ModalView {
             continueButton.disabled = true;
          }
 
-         this._events.emit('validateError', { paymentContainer, inputValue: addressInput.value });
+         this._events.emit('validateError', { container, inputValue: addressInput.value });
       })
 
       // Переход на страницу с данными пользователя
@@ -53,7 +52,7 @@ export class OrderPaymentView extends ModalView {
          this._events.emit('showContactsView');
       })
 
-      this._renderModal( paymentContainer);
-      return paymentContainer;
+      this._renderModal( container);
+      return container;
    }
 }

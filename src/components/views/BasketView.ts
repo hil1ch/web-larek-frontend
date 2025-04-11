@@ -9,8 +9,8 @@ export class BasketView extends ModalView {
    }
 
    render({ items, totalPrice }: { items: HTMLElement[], totalPrice: number }) {
-      const basketContainer = cloneTemplate("#basket") as HTMLElement;
-      const basketButton = basketContainer.querySelector('.basket__button') as HTMLButtonElement;
+      const container = cloneTemplate("#basket") as HTMLElement;
+      const basketButton = container.querySelector('.basket__button') as HTMLButtonElement;
 
       // Кнопка недоступна, если корзина пуста
       basketButton.disabled = totalPrice === 0;
@@ -20,13 +20,13 @@ export class BasketView extends ModalView {
       })
 
       // Заполняем контейнер товарами
-      const basketList = basketContainer.querySelector(".basket__list");
+      const basketList = container.querySelector(".basket__list");
       items.map(item => basketList.appendChild(item))
 
-      basketContainer.querySelector(".basket__price").textContent = `${totalPrice} синапсов`;
+      container.querySelector(".basket__price").textContent = `${totalPrice} синапсов`;
 
-      this._renderModal(basketContainer);
-      return basketContainer;
+      this._renderModal(container);
+      return container;
   }
 }
 

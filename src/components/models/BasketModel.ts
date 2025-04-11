@@ -1,52 +1,46 @@
 import { EventEmitter } from '../base/events';
-import { IBasketItem, IProduct } from '../../types/types';
+import { IProduct } from '../../types/types';
 
 interface IBasketModel {
-	items: Map<string, IBasketItem>; // список товаров
-	add(item: IBasketItem): void; // метод добавления товара по его идентификатору
+	add(item: IProduct): void; // метод добавления товара по его идентификатору
 	remove(item: IProduct): void; // метод удаления товара по его идентификатору
-	getTotal(items: IProduct[]): number; // общая сумма в корзине
 	getItemsCount(): number; // Количество товаров в корзине
-   getItems(): Map<string, IBasketItem>; // получение всех товаров
+   getItems(): IProduct[]; // получение всех товаров
+	clear(): void; //Очистка всей корзины
 }
 
 export class BasketModel implements IBasketModel {
-	items: Map<string, IBasketItem> = new Map();
-	_events: EventEmitter | null = null;
+    _events: EventEmitter | null = null;
+    items: IProduct[] = [];
 
-	constructor(events: EventEmitter) {
-		this._events = events;
-	}
+    constructor(events: EventEmitter) {
+        this._events = events;
+    }
 
-	add(item: IBasketItem): void {
-		if (!this.items.has(item.id)) {
-			this.items.set(item.id, item);
-		}
-	}
+    add(item: IProduct) {
+        this.items.push(item);
+    }
 
-	remove(item: IProduct): void {
-		if (!this.items.has(item.id)) return; // если корзина пуста
+    getItemsCount() {
+        return this.items.length;
+    }
 
-		if (this.items.get(item.id)) {
-			// иначе
-			this.items.delete(item.id);
-		}
-
+    remove(item: IProduct): void {
+		this.items.forEach((product, id) => {
+			 if (product.id === item.id) {
+				  this.items.splice(id, 1);
+				  item.isInBasket = false;
+			 }
+		});
 		this._events.emit('renderBasket', this.items);
-	}
-
-	getTotal(): number {
-		return Array.from(this.items.values()).reduce(
-			(total, item) => total + item.price,
-			0
-		);
-	}
-
-   getItemsCount(): number {
-      return this.items.size;
-   }
-
-   getItems(): Map<string, IBasketItem> {
-      return this.items;
   }
+
+    clear() {
+        this.items.forEach((item) => item.isInBasket = false);
+        this.items = [];
+    }
+
+    getItems() {
+        return this.items; 
+    }
 }

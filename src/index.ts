@@ -21,6 +21,7 @@ import { BasketHeaderButtonView } from './components/views/BasketView';
 import { API_URL } from './utils/constants';
 
 import { IOrderForm, IProduct, PaymentMethod } from './types/types';
+import { getTotalPrice } from './utils/utils';
 
 const api = new Api(API_URL);
 const events = new EventEmitter();
@@ -40,7 +41,11 @@ const productView = new ProductView(events);
 const basketHeaderButtonView = new BasketHeaderButtonView(events);
 
 events.on('changeCatalogItems', (items: IProduct[]) => {
-   catalogView.render({ items: items.map(item => new ProductView(events).render(item)) })
+   catalogView.render({ items: items.map(item => new CatalogItemView(events).render(item)) })
+});
+
+events.on('openCatalogItem', (item: IProduct) => {
+   productView.render(item);
 });
 
 events.on('changePaymentMethod', ({ payment }: { payment: PaymentMethod }) => {
@@ -55,12 +60,15 @@ events.on('changeAddressInput', (address: Partial<IOrderForm>) => {
 events.on('changeEmailInput', (email: Partial<IOrderForm>) => {
    orderModel.setInput(email);
 });
+
 events.on('changePhoneInput', (phone: Partial<IOrderForm>) => {
    orderModel.setInput(phone);
 });
 
-events.on('openCatalogItem', (item: IProduct) => {
-   productView.render(item);
+events.on('clearBasketItems', () => {
+   orderModel.reset();
+   basketModel.clear();
+   basketHeaderButtonView.render({ itemsCount: basketModel.getItemsCount() });
 });
 
 events.on('addItemToBasket', (item: IProduct) => {
@@ -75,39 +83,32 @@ events.on('deleteItemFromBasket', (item: IProduct) => {
 
 events.on('validateError', ({ container, inputValue }: { container: HTMLElement, inputValue: boolean }) => {
    const errorContainer = container.querySelector('.form__errors');
-   inputValue ? errorContainer.textContent = '' : errorContainer.textContent = 'Заполнены не все поля!';
+   inputValue ? errorContainer.textContent = '' : errorContainer.textContent = 'Поля не заполнены';
 });
 
 events.on('renderBasket', () => {
-   const itemsMap = basketModel.getItems();
-   const totalPrice = basketModel.getTotal();
-   const items = Array.from(itemsMap.entries()).map(([id, item]) => 
-      new BasketItemView(events).render({ item, id })
-   );
-   basketView.render({ items, totalPrice });
+   const itemsList = basketModel.getItems();
+   const totalPrice = getTotalPrice(itemsList);
+   const items = itemsList.map((item, id) => new BasketItemView(events).render({ item, id }));
+   basketView.render({ items, totalPrice })
 });
 
 events.on('renderOrder', () => {
-   orderPaymentView.render({ 
-       orderForm: { 
-           address: orderModel.getAddress() 
-       }, 
-       payment: orderModel.getPaymentMethod() 
-   });
+   orderPaymentView.render({ address: orderModel.getAddress(), payment: orderModel.getPaymentMethod() });
 });
 
 events.on('showContactsView', () => {
    orderContactsView.render({ email: orderModel.getEmail(), phone: orderModel.getPhone() });
 })
 
-events.on('showContactsView', () => {
+events.on('showSuccessView', () => {
    try {
        api.post('/order', {
            address: orderModel.getAddress(),
            email: orderModel.getEmail(),
            phone: orderModel.getPhone(),
            payment: orderModel.getPaymentMethod(),
-           total: basketModel.getTotal(basketModel.getItems()),
+           total: getTotalPrice(basketModel.getItems()),
            items: basketModel.getItems().map(item => item.id)
        });
 

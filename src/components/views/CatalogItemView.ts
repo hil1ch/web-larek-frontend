@@ -10,23 +10,23 @@ export class CatalogItemView extends View {
    }
 
    render(item: IProduct) {
-      const cardContainer = cloneTemplate('#card-catalog') as HTMLButtonElement;
+      const container = cloneTemplate('#card-catalog') as HTMLButtonElement;
 
-      cardContainer.addEventListener('click', () => {
+      container.addEventListener('click', () => {
          this._events.emit("openCatalogItem", item);
       })
 
-      const categoryElement = cardContainer.querySelector('.card_category');
+      const categoryElement = container.querySelector('.card__category');
       categoryElement.textContent = item.category;
       categoryElement.classList.add(getCategoryName(item.category));
       
-      cardContainer.querySelector('.card_title').textContent = item.name;
-      cardContainer.querySelector('.card_price').textContent = item.price ? item.price + ' синапсов' : 'Бесценно';
+      container.querySelector('.card__title').textContent = item.name;
+      container.querySelector('.card__price').textContent = item.price ? item.price + ' синапсов' : 'Бесценно';
       
-      const imageElement = cardContainer.querySelector('.card_image') as HTMLImageElement;
+      const imageElement = container.querySelector('.card__image') as HTMLImageElement;
       imageElement.src = `${CDN_URL}${item.image}`;
 
-      return cardContainer;
+      return container;
    }
 }
 

@@ -14,8 +14,7 @@ interface IOrderModel  {
 
 export class OrderModel implements IOrderModel {
    orderForm: IOrderForm;
-   protected _submit: HTMLButtonElement;
-   protected _events: EventEmitter | null = null;
+   _events: EventEmitter | null = null;
 
    constructor(events: EventEmitter) {
       this._events = events;
@@ -43,17 +42,17 @@ export class OrderModel implements IOrderModel {
 
    getPaymentMethod() {
       return this.orderForm.payment as PaymentMethod;
-  }
+   }
 
-  getAddress() {
+   getAddress() {
       return this.orderForm.address;
-  }
+   }
 
-  getEmail() {
+   getEmail() {
       return this.orderForm.email;
-  }
+   }
 
-  getPhone() {
+   getPhone() {
       return this.orderForm.phone;
-  }
+   }
 }
