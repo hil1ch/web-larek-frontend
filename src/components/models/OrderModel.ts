@@ -1,13 +1,18 @@
 import { IOrderForm } from "../../types/types";
 import { EventEmitter } from "../base/events";
+import { PaymentMethod } from "../../types/types";
 
 interface IOrderModel  {
    orderForm: IOrderForm;
    setInput(orderForm: Partial<IOrderForm>): void;
    reset(): void;
+   getPaymentMethod(): PaymentMethod;
+   getAddress(): string;
+   getEmail(): string;
+   getPhone(): string;
 }
 
-export class OrderModal implements IOrderModel {
+export class OrderModel implements IOrderModel {
    orderForm: IOrderForm;
    protected _submit: HTMLButtonElement;
    protected _events: EventEmitter | null = null;
@@ -36,8 +41,19 @@ export class OrderModal implements IOrderModel {
       }
    }
 
-   // управление состоянием кнопки
-   set disableSubmitButton(flag: boolean) {
-      this._submit.disabled = !flag;
-   }
+   getPaymentMethod() {
+      return this.orderForm.payment as PaymentMethod;
+  }
+
+  getAddress() {
+      return this.orderForm.address;
+  }
+
+  getEmail() {
+      return this.orderForm.email;
+  }
+
+  getPhone() {
+      return this.orderForm.phone;
+  }
 }

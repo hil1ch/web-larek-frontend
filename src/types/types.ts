@@ -7,7 +7,9 @@ export interface IProduct {
    price: number | null;        // стоимость
    category: ProductCategory    // категория
    image: string;               // изображение
+   isInBasket: boolean;         // товар в корзине (да - нет)
 }
+
 // товар в корзине
 export interface IBasketItem {
     id: string;                  // идентификатор 
@@ -27,3 +29,12 @@ export interface IOrderForm {
 
 // категория товара
 export type ProductCategory = 'софт-скил' | 'другое' | 'дполнительное' | 'хард-скил' | 'кнопка';
+
+//Cписок товаров с сервера
+export type ProductsList = {
+    items: IProduct[],
+    total: number
+}
+
+// Способ оплаты
+export type PaymentMethod = 'онлайн' | 'при получении';

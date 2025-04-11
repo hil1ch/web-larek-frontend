@@ -134,3 +134,6 @@ yarn build
 
  // категория товара
  -type ProductCategory = 'софт-скил' | 'другое' | 'дполнительное' | 'хард-скил' | 'кнопка';
+
+ // Способ оплаты
+ -type PaymentMethod = 'card' | 'cash';

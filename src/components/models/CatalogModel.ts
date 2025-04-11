@@ -13,10 +13,12 @@ export class CatalogModel implements ICatalogModel{
 
     constructor(events: EventEmitter) {
         this._events = events;
+        this.items = [];
     }
 
     setProducts(items: IProduct[]): void {
         this.items = items;
+        this._events.emit('changeCatalogItems', this.items);
     }
 
     getProduct(id: string): IProduct | undefined {

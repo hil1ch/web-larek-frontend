@@ -133,3 +133,19 @@ export function createElement<
     }
     return element;
 }
+
+// функция возвращает название категории товара
+export function getCategoryName(name: string): string {
+    switch(name) {
+        case 'софт-скил':
+            return 'card__category_soft';
+        case 'дполнительное':
+            return 'card__category_additional';
+        case 'хард-скил':
+            return 'card__category_hard';
+        case 'кнопка':
+            return 'card__category_button';
+        default:
+            return 'card__category_other';
+    }
+}
