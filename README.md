@@ -50,7 +50,7 @@ yarn build
 В приложении используется архитектурный паттерн MVC (Model-View-Controller), который делит код на три слоя:
 1. Model — данные, в которых отражена вся ценность приложения. Этот слой содержит значительную часть бизнес-логики. При изменении данные должны попадать в отображение.
 2. Слой отображения (View) — интерфейс для взаимодействия с пользователем. Его задача — выводить что-то на экран и генерировать события с действиями пользователя. 
-3. Слой управления (Controller) — обрабатывает действия пользователя, проверяет полученные данные и передаёт их модели.
+3. Слой управления (Controller) — обрабатывает действия пользователя, проверяет полученные данные и передаёт их модели. (index.ts)
 
 ## Базовые классы
 
@@ -80,21 +80,28 @@ yarn build
 
 - BasketModel: управляет состоянием корзины.
    IBasketModel:
-      items: Map<string, number> - список товаров
       add(id: string): void - метод добавления товара по его идентификатору
       remove(id: string): void - метод удаления товара по его идентификатору
+      getItemsCount(): number; - количество товаров в корзине
+      getItems(): IProduct[]; - получение всех товаров
+      clear(): void; - очистка всей корзины
 
 - CatalogModel - управляет состоянием списка товаров.
    ICatalogModel:
-      items: IProduct[] - список товаров
       setProducts(items: IProduct[]): void - обновление списка товаров
-      getProduct(id: string): IProduct - получение товара из каталога по его идентификатору
+      getProducts(): IProduct[]; - получение товаров из каталога
 
 - OrderModel - управляет данными заказа
    IOrderModel:
-      orderForm: IOrderForm
-      setInput(orderForm: Partial<IOrderForm>): void; - управление введенными данными
-      reset(): void - сброс данных заказа
+      setPaymentMethod(method: PaymentMethod): void; - обновление способа оплаты
+      setAdrress(address: string): void; - обновление поля адреса
+      setEmail(email: string): void; - обновление поля почты
+      setPhone(phone: string): void; - обновлени поля телефона
+      reset(): void; - очистка всех полей после оформаления покупки
+      getPaymentMethod(): PaymentMethod; - получение способа оплаты
+      getAddress(): string; - получение адреса
+      getEmail(): string; - получение почты
+      getPhone(): string; - получениие телефона
 
 ## View
 
@@ -118,6 +125,7 @@ yarn build
     price: number | null;        // стоимость
     category: ProductCategory    // категория
     image: string;               // изображение
+    isInBasket: boolean;         // товар в корзине (да - нет)
 
  -IBasketItem (товар в корзине):
     id: string;                  // идентификатор 
@@ -136,4 +144,4 @@ yarn build
  -type ProductCategory = 'софт-скил' | 'другое' | 'дполнительное' | 'хард-скил' | 'кнопка';
 
  // Способ оплаты
- -type PaymentMethod = 'card' | 'cash';
+ -type PaymentMethod = 'олнайн' | 'при получении';

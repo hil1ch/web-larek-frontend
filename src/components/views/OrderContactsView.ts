@@ -1,53 +1,62 @@
-import { ModalView } from "./ModalView";
-import { EventEmitter } from "../base/events";
-import { cloneTemplate } from "../../utils/utils";
-import { IOrderForm } from "../../types/types";
+import { EventEmitter } from '../base/events';
+import { cloneTemplate } from '../../utils/utils';
+import { ModalView } from './ModalView';
 
 export class OrderContactsView extends ModalView {
-   constructor(events: EventEmitter) {
-      super(events)
-   }
+	constructor(events: EventEmitter) {
+		super(events);
+	}
 
-   // Обновление состояния кнопки и валидации
-   private _updateContactsButtonAndValidation(container: HTMLFormElement, email: string, phone: string) {
-      const payButton = container.querySelector('.button') as HTMLButtonElement;
-      if (email === '' || phone === '') {
-         payButton.disabled = true;
-      }
-      this._events.emit('validateError', { container, inputValue: email && phone });
-  }
+	render({ email, phone }: { email: string; phone: string }) {
+		const container = cloneTemplate('#contacts') as HTMLFormElement;
+		const emailInput = container.querySelector(
+			'input[name="email"]'
+		) as HTMLInputElement;
+		const phoneInput = container.querySelector(
+			'input[name="phone"]'
+		) as HTMLInputElement;
 
-   render(orderForm: Partial<IOrderForm>) {
-      const container = cloneTemplate('#contacts') as HTMLFormElement;
+		const payButton = container.querySelector('.button') as HTMLButtonElement;
 
-      const emailInput = container.querySelector('.form__input[name="email"]') as HTMLInputElement;
-      const phoneInput = container.querySelector('.form__input[name="phone"]') as HTMLInputElement;
+		// Кнопка неактивна, если поля не заполнены
+		if (email === '' || phone === '') {
+			payButton.disabled = true;
+		}
 
-      const payButton = container.querySelector('.button') as HTMLButtonElement;
+		emailInput.value = email;
+		phoneInput.value = phone;
 
-      emailInput.value = orderForm.email;
-      phoneInput.value = orderForm.phone;
+		this._events.emit('validateError', {
+			container,
+			inputValue: emailInput.value && phoneInput.value,
+		});
 
-      this._updateContactsButtonAndValidation(container, orderForm.email, orderForm.phone);
+		// Валидация почты
+		emailInput.addEventListener('input', () => {
+			this._events.emit('changeEmailInput', { email: emailInput.value });
+			payButton.disabled = emailInput.value === '' || phoneInput.value === '';
+			this._events.emit('checkModalError', {
+				container,
+				inputValue: emailInput.value && phoneInput.value,
+			});
+		});
 
-      // Валидация почты
-      emailInput.addEventListener('input', () => {
-         this._events.emit('changeEmailInput', {email: emailInput.value})
-         this._updateContactsButtonAndValidation(container, emailInput.value, phoneInput.value);
-      })
+		// Валидация телефона
+		phoneInput.addEventListener('input', () => {
+			this._events.emit('changePhoneInput', { phone: phoneInput.value });
+			payButton.disabled = emailInput.value === '' || phoneInput.value === '';
+			this._events.emit('validateError', {
+				container,
+				inputValue: emailInput.value && phoneInput.value,
+			});
+		});
 
-      // Валидация телефона
-      phoneInput.addEventListener('input', () => {
-         this._events.emit('changePhoneInput', {phone: emailInput.value})
-         this._updateContactsButtonAndValidation(container, emailInput.value, phoneInput.value);
-      })
+		// Переход на окно успешкой покупки
+		payButton.addEventListener('click', () => {
+			this._events.emit('showSuccessView');
+		});
 
-      // Переход к окну успешного заказа
-      payButton.addEventListener('click', () => {
-         this._events.emit('showSuccessView');
-      })
-
-      this._renderModal(container);
-      return container;
-   }
+		this._renderModal(container);
+		return container;
+	}
 }

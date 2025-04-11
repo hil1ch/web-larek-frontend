@@ -20,7 +20,7 @@ import { BasketHeaderButtonView } from './components/views/BasketView';
 
 import { API_URL } from './utils/constants';
 
-import { IOrderForm, IProduct, PaymentMethod } from './types/types';
+import { IProduct, PaymentMethod } from './types/types';
 import { getTotalPrice } from './utils/utils';
 
 const api = new Api(API_URL);
@@ -40,59 +40,71 @@ const orderSuccessView = new OrderSuccessView(events);
 const productView = new ProductView(events);
 const basketHeaderButtonView = new BasketHeaderButtonView(events);
 
+// Обработчик события изменения товаров каталога
 events.on('changeCatalogItems', (items: IProduct[]) => {
-   catalogView.render({ items: items.map(item => new CatalogItemView(events).render(item)) })
+   catalogView.render({ items: items.map(item =>catalogItemView.render(item)) })
 });
 
+// Обработчик открытия окна товара
 events.on('openCatalogItem', (item: IProduct) => {
    productView.render(item);
 });
 
+// Обработчик изменения метода оплаты
 events.on('changePaymentMethod', ({ payment }: { payment: PaymentMethod }) => {
-   orderModel.setInput({ payment });
+   orderModel.setPaymentMethod(payment);
    events.emit('renderOrder');
 });
 
-events.on('changeAddressInput', (address: Partial<IOrderForm>) => {
-   orderModel.setInput(address);
+// Обработчик изменения адреса
+events.on('changeAddressInput', ({address}: {address: string}) => {
+   orderModel.setAdrress(address);
 });
 
-events.on('changeEmailInput', (email: Partial<IOrderForm>) => {
-   orderModel.setInput(email);
+// Обработчик изменения почты
+events.on('changeEmailInput', ({email}: {email: string}) => {
+   orderModel.setEmail(email);
 });
 
-events.on('changePhoneInput', (phone: Partial<IOrderForm>) => {
-   orderModel.setInput(phone);
+// Обработчик изменения телефона
+events.on('changePhoneInput', ({phone}: {phone: string}) => {
+   orderModel.setPhone(phone);
 });
 
+// Обработчик очистки корзины после совершения покупки
 events.on('clearBasketItems', () => {
    orderModel.reset();
    basketModel.clear();
    basketHeaderButtonView.render({ itemsCount: basketModel.getItemsCount() });
 });
 
+// Обработчик добавления товара в корзину
 events.on('addItemToBasket', (item: IProduct) => {
    basketModel.add(item);
    basketHeaderButtonView.render({ itemsCount: basketModel.getItemsCount() });
 });
 
+// Обработчик удаления товара из корзины
 events.on('deleteItemFromBasket', (item: IProduct) => {
    basketModel.remove(item);
    basketHeaderButtonView.render({ itemsCount: basketModel.getItemsCount() });
 });
 
+// Обработчик ошибок валидации
 events.on('validateError', ({ container, inputValue }: { container: HTMLElement, inputValue: boolean }) => {
    const errorContainer = container.querySelector('.form__errors');
    inputValue ? errorContainer.textContent = '' : errorContainer.textContent = 'Поля не заполнены';
 });
 
+// Обработчик рендера корзины
 events.on('renderBasket', () => {
    const itemsList = basketModel.getItems();
    const totalPrice = getTotalPrice(itemsList);
-   const items = itemsList.map((item, id) => new BasketItemView(events).render({ item, id }));
+   const items = itemsList.map((item, id) => basketItemView.render({ item, id }));
    basketView.render({ items, totalPrice })
 });
 
+// Обработчики рендера формы заказа
 events.on('renderOrder', () => {
    orderPaymentView.render({ address: orderModel.getAddress(), payment: orderModel.getPaymentMethod() });
 });
@@ -101,6 +113,7 @@ events.on('showContactsView', () => {
    orderContactsView.render({ email: orderModel.getEmail(), phone: orderModel.getPhone() });
 })
 
+// Обработчик успешного оформления заказа
 events.on('showSuccessView', () => {
    try {
        api.post('/order', {
@@ -118,7 +131,7 @@ events.on('showSuccessView', () => {
    }
 })
 
-
+// Загрузка товаров с сервера
 api.get('/product')
    .then(({ items }: { items: IProduct[] }) => catalogModel.setProducts(items))
 

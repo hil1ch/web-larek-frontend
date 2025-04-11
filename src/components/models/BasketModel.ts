@@ -4,9 +4,9 @@ import { IProduct } from '../../types/types';
 interface IBasketModel {
 	add(item: IProduct): void; // метод добавления товара по его идентификатору
 	remove(item: IProduct): void; // метод удаления товара по его идентификатору
-	getItemsCount(): number; // Количество товаров в корзине
-   getItems(): IProduct[]; // получение всех товаров
-	clear(): void; //Очистка всей корзины
+	getItemsCount(): number; // количество товаров в корзине
+    getItems(): IProduct[]; // получение всех товаров
+	clear(): void; // очистка всей корзины
 }
 
 export class BasketModel implements IBasketModel {

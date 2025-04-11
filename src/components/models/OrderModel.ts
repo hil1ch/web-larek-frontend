@@ -1,58 +1,69 @@
-import { IOrderForm } from "../../types/types";
 import { EventEmitter } from "../base/events";
 import { PaymentMethod } from "../../types/types";
 
 interface IOrderModel  {
-   orderForm: IOrderForm;
-   setInput(orderForm: Partial<IOrderForm>): void;
-   reset(): void;
-   getPaymentMethod(): PaymentMethod;
-   getAddress(): string;
-   getEmail(): string;
-   getPhone(): string;
+   setPaymentMethod(method: PaymentMethod): void; // обновление способа оплаты
+   setAdrress(address: string): void; // обновление поля адреса
+   setEmail(email: string): void; // обновление поля почты
+   setPhone(phone: string): void; // обновлени поля телефона
+   reset(): void; // очистка всех полей после оформаления покупки
+   getPaymentMethod(): PaymentMethod; // получение способа оплаты
+   getAddress(): string; // получение адреса
+   getEmail(): string; // получение почты
+   getPhone(): string; // получениие телефона
 }
 
 export class OrderModel implements IOrderModel {
-   orderForm: IOrderForm;
-   _events: EventEmitter | null = null;
+    _events: EventEmitter;
+    paymentMethod: PaymentMethod;
+    address: string;
+    phone: string;
+    email: string;
 
-   constructor(events: EventEmitter) {
-      this._events = events;
-   }
+    constructor(events: EventEmitter) {
+        this._events = events;
+        this.paymentMethod = 'онлайн';
+        this.address = '';
+        this.email = '';
+        this.phone = '';
+    }
 
-   // метод обновляет данные формы
-   setInput(orderForm: Partial<IOrderForm>): void {
-      this.orderForm = {
-         ...this.orderForm,
-         ...orderForm,
-      }
-   }
- 
-   // метод сбрасывает форму
-   reset() {
-      this.orderForm = {
-         payment: '',
-         address: '',
-         phone: '',
-         email: '',
-         total: this.orderForm.total,
-         items: [...this.orderForm.items],
-      }
-   }
+    reset() {
+        this.paymentMethod = 'онлайн';
+        this.address = '';
+        this.email = '';
+        this.phone = '';
+    }
 
-   getPaymentMethod() {
-      return this.orderForm.payment as PaymentMethod;
-   }
+    setPaymentMethod(method: PaymentMethod) {
+        this.paymentMethod = method;
+    }
 
-   getAddress() {
-      return this.orderForm.address;
-   }
+    setAdrress(address: string) {
+        this.address = address;
+    }
 
-   getEmail() {
-      return this.orderForm.email;
-   }
+    setEmail(email: string) {
+        this.email = email;
+    }
 
-   getPhone() {
-      return this.orderForm.phone;
-   }
+    setPhone(phone: string) {
+        this.phone = phone;
+    }
+
+    getPaymentMethod() {
+        return this.paymentMethod;
+    }
+
+    getAddress() {
+        return this.address;
+    }
+
+    getEmail() {
+        return this.email;
+    }
+
+    getPhone() {
+        return this.phone;
+    }
 }
