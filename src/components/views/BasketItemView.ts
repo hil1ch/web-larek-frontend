@@ -1,14 +1,14 @@
 import { EventEmitter } from "../base/events";
 import { cloneTemplate } from "../../utils/utils";
 import { View } from "./View";
-import { IProduct } from "../../types/types";
+import { IBasketItem } from "../../types/types";
 
 export class BasketItemView extends View {
     constructor(events: EventEmitter) {
         super(events);
     }
 
-    render({ item, id }: { item: IProduct, id: number}) {
+    render({ item, id }: { item: IBasketItem, id: number}) {
         const container = cloneTemplate("#card-basket") as HTMLElement;
         const deleteButton = container.querySelector(".basket__item-delete") as HTMLButtonElement;
         deleteButton.addEventListener('click', () => {

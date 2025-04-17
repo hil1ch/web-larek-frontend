@@ -16,7 +16,6 @@ import { OrderContactsView } from './components/views/OrderContactsView';
 import { OrderPaymentView } from './components/views/OrderPaymentView';
 import { OrderSuccessView } from './components/views/OrderSuccessView';
 import { ProductView } from './components/views/ProductView';
-import { BasketHeaderButtonView } from './components/views/BasketView';
 
 import { API_URL } from './utils/constants';
 
@@ -38,7 +37,6 @@ const orderContactsView = new OrderContactsView(events);
 const orderPaymentView = new OrderPaymentView(events);
 const orderSuccessView = new OrderSuccessView(events);
 const productView = new ProductView(events);
-const basketHeaderButtonView = new BasketHeaderButtonView(events);
 
 // Обработчик события изменения товаров каталога
 events.on('changeCatalogItems', (items: IProduct[]) => {
@@ -75,19 +73,19 @@ events.on('changePhoneInput', ({phone}: {phone: string}) => {
 events.on('clearBasketItems', () => {
    orderModel.reset();
    basketModel.clear();
-   basketHeaderButtonView.render({ itemsCount: basketModel.getItemsCount() });
+   basketView.renderHeader({ itemsCount: basketModel.getItemsCount() });
 });
 
 // Обработчик добавления товара в корзину
 events.on('addItemToBasket', (item: IProduct) => {
    basketModel.add(item);
-   basketHeaderButtonView.render({ itemsCount: basketModel.getItemsCount() });
+   basketView.renderHeader({ itemsCount: basketModel.getItemsCount() });
 });
 
 // Обработчик удаления товара из корзины
 events.on('deleteItemFromBasket', (item: IProduct) => {
    basketModel.remove(item);
-   basketHeaderButtonView.render({ itemsCount: basketModel.getItemsCount() });
+   basketView.renderHeader({ itemsCount: basketModel.getItemsCount() });
 });
 
 // Обработчик ошибок валидации

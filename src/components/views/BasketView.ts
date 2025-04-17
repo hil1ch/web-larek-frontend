@@ -1,55 +1,40 @@
 import { ModalView } from "./ModalView";
 import { EventEmitter } from "../base/events";
 import { cloneTemplate } from "../../utils/utils";
-import { View } from "./View";
 
 export class BasketView extends ModalView {
-   constructor(events: EventEmitter) {
-      super(events);
-   }
+    private headerBasketButton: HTMLElement;
+    private basketItemCounter: HTMLElement;
 
-   render({ items, totalPrice }: { items: HTMLElement[], totalPrice: number }) {
-      const container = cloneTemplate("#basket") as HTMLElement;
-      const basketButton = container.querySelector('.basket__button') as HTMLButtonElement;
+    constructor(events: EventEmitter) {
+        super(events);
+        this.headerBasketButton = document.querySelector('.header__basket');
+        this.basketItemCounter = this.headerBasketButton.querySelector('.header__basket-counter');
+        this.headerBasketButton.onclick = () => this._events.emit('renderBasket');
+    }
 
-      // Кнопка недоступна, если корзина пуста
-      basketButton.disabled = totalPrice === 0;
+    renderHeader({ itemsCount }: { itemsCount: number }): HTMLElement {
+        this.basketItemCounter.textContent = itemsCount.toString();
+        return this.headerBasketButton;
+    }
 
-      basketButton.addEventListener('click', () => {
-          this._events.emit('renderOrder')
-      })
+    render(data: { items: HTMLElement[], totalPrice: number }): HTMLElement {
+        const { items, totalPrice } = data;
+        const container = cloneTemplate("#basket") as HTMLElement;
+        const basketButton = container.querySelector('.basket__button') as HTMLButtonElement;
 
-      // Заполняем контейнер товарами
-      const basketList = container.querySelector(".basket__list");
-      items.map(item => basketList.appendChild(item))
+        basketButton.disabled = totalPrice === 0;
 
-      container.querySelector(".basket__price").textContent = `${totalPrice} синапсов`;
+        basketButton.addEventListener('click', () => {
+            this._events.emit('renderOrder');
+        });
 
-      this._renderModal(container);
-      return container;
-  }
-}
+        const basketList = container.querySelector(".basket__list");
+        items.forEach(item => basketList.appendChild(item));
 
-export class BasketHeaderButtonView extends View {
-   private headerBasketButton: HTMLElement;
-   private basketItemCounter: HTMLElement;
+        container.querySelector(".basket__price").textContent = `${totalPrice} синапсов`;
 
-   constructor(events: EventEmitter) {
-       super(events);
-
-       this.headerBasketButton = document.querySelector('.header__basket');
-       this.init()
-   }
-
-   init() {
-       this.basketItemCounter = this.headerBasketButton.querySelector('.header__basket-counter');
-
-       this.headerBasketButton.onclick = () => this._events.emit('renderBasket');
-   }
-
-   render({ itemsCount }: { itemsCount: number }): HTMLElement {
-       this.basketItemCounter.textContent = itemsCount.toString();
-
-       return this.headerBasketButton;
-   }
+        this._renderModal(container);
+        return container;
+    }
 }

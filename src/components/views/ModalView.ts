@@ -1,7 +1,7 @@
 import { EventEmitter } from "../base/events";
 import { View } from "./View";
 
-export class ModalView extends View {
+export abstract class ModalView extends View {
     // DOM-элемент контейнера модального окна
     _modalContainer: HTMLElement;
 
@@ -21,8 +21,6 @@ export class ModalView extends View {
         this._modalContainer.classList.add('modal_active');
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    render(data: unknown): HTMLElement {
-        throw ('Not implemented');
-    }
+    
+    abstract render(data?: unknown): HTMLElement;
 }
