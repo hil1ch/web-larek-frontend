@@ -16,7 +16,7 @@ export class BasketItemView extends View {
         });
 
         container.querySelector(".basket__item-index").textContent = (id + 1).toString();
-        container.querySelector(".card__title").textContent = item.name;
+        container.querySelector(".card__title").textContent = item.title;
         container.querySelector(".card__price").textContent = item.price ? item.price + ' синапсов' : "Бесценно";
 
         return container;

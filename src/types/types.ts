@@ -2,7 +2,7 @@
 // товар
 export interface IProduct {
    id: string;                  // идентификатор товара
-   name: string;                // название 
+   title: string;                // название 
    description?: string;        // описание 
    price: number | null;        // стоимость
    category: ProductCategory    // категория
@@ -13,7 +13,7 @@ export interface IProduct {
 // товар в корзине
 export interface IBasketItem {
     id: string;                  // идентификатор 
-    name: string;                // название 
+    title: string;                // название 
     price: number | null;        // стоимость
 }
 

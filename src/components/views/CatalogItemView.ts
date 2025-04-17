@@ -20,7 +20,7 @@ export class CatalogItemView extends View {
       categoryElement.textContent = item.category;
       categoryElement.classList.add(getCategoryName(item.category));
       
-      container.querySelector('.card__title').textContent = item.name;
+      container.querySelector('.card__title').textContent = item.title;
       container.querySelector('.card__price').textContent = item.price ? item.price + ' синапсов' : 'Бесценно';
       
       const imageElement = container.querySelector('.card__image') as HTMLImageElement;
