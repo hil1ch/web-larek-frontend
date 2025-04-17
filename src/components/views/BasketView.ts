@@ -10,7 +10,9 @@ export class BasketView extends ModalView {
         super(events);
         this.headerBasketButton = document.querySelector('.header__basket');
         this.basketItemCounter = this.headerBasketButton.querySelector('.header__basket-counter');
-        this.headerBasketButton.onclick = () => this._events.emit('renderBasket');
+        this.headerBasketButton.addEventListener('click', () => {
+            this._events.emit('renderBasket');
+        }) 
     }
 
     renderHeader({ itemsCount }: { itemsCount: number }): HTMLElement {
